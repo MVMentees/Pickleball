@@ -1,0 +1,61 @@
+    FUNCTION JBASESOURCEFILE(cataloged_program)
+        $option jabba
+        INCLUDE JBC.h
+        source_file = ''
+*
+*** Check libs
+*
+        IF GETENV('JBCOBJECTLIST',jbcobjectlist_env) THEN
+            CONVERT ':' TO @AM IN jbcobjectlist_env
+            last_lib = DCOUNT(jbcobjectlist_env,@AM)
+            FOR lib_count = 1 TO last_lib until source_file # ''
+                lib_dir = jbcobjectlist_env<lib_count>
+                OPEN lib_dir TO F.LIB THEN
+                    object_item = cataloged_program:'.so'
+                    READ so_exists FROM F.LIB,object_item THEN
+                        object_item = lib_dir:DIR_DELIM_CH:object_item
+                        obj = new object("$jelf")
+                        IF not(obj->getjelf()->option_enabled ) THEN
+                            GO EXITSUB
+                        END
+                        rtn = obj->getjelf(object_item)
+                        jelf_info = rtn->$tojson(1)
+                        source_index = INDEX(jelf_info,'"source_filename":',1)
+                        source_file = FIELD(jelf_info[source_index,99999],',',1)
+                        source_file = FIELD(source_file,':',2)
+                        source_file = FIELD(source_file,'"',2)
+                    END
+                END
+            NEXT lib_count
+        END
+        IF LEN(source_file) THEN GO EXITSUB
+*
+*** Check bins
+*
+        IF GETENV('PATH',path_env) THEN
+            CONVERT ':' TO @AM IN path_env
+            last_bin = DCOUNT(path_env,@AM)
+            FOR bin_count = 1 TO last_bin until source_file # ''
+                bin_dir = path_env<bin_count>
+                OPEN bin_dir TO F.BIN THEN
+                    object_item = cataloged_program:'.so'
+                    READ so_exists FROM F.BIN,object_item THEN
+                        object_item = bin_dir:DIR_DELIM_CH:object_item
+                        obj = new object("$jelf")
+                        IF not(obj->getjelf()->option_enabled ) THEN
+                            GO EXITSUB
+                        END
+                        rtn = obj->getjelf(object_item)
+                        jelf_info = rtn->$tojson(1)
+                        source_index = INDEX(jelf_info,'"source_filename":',1)
+                        source_file = FIELD(jelf_info[source_index,99999],',',1)
+                        source_file = FIELD(source_file,':',2)
+                        source_file = FIELD(source_file,'"',2)
+                    END
+                END
+            NEXT bin_count
+        END
+*
+EXITSUB:
+*
+RETURN source_file

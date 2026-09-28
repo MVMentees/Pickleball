@@ -1,0 +1,8 @@
+    SUBROUTINE FRED.FIND.SOURCE.FILE.UV.SUB(source_id,source_file_name)
+    source_file_name = ''
+    OPEN 'VOC' TO F.VOC ELSE RETURN
+    READ R.VOC FROM F.VOC,source_id ELSE RETURN
+    IF R.VOC<1> = 'V' THEN
+       source_file_name = R.VOC<9>[1,LEN(R.VOC<9>) - 2]
+    END
+    RETURN

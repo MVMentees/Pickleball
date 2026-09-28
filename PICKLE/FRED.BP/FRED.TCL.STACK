@@ -1,0 +1,600 @@
+      Tcl = @SENTENCE
+      stack_help_line = 1                ; * help_line on
+* TCL command stack
+      TCLNAME = FIELD(Tcl,' ',2)
+      OPEN '','FRED_EDITOR_FILE' TO F.ERR ELSE STOP
+1:*
+      ASK.RUN = 0
+      BLK300 = STR(" ",300)
+      PROMPT ""
+      WHO = OCONV('','U50BB')
+      PORT = SYSTEM(21) + 0
+      IF LEN(TCLNAME) THEN
+         STACKNAME = TCLNAME
+         PORT = STACKNAME
+      END
+      ACCT = ''
+      READ R.WORDS FROM F.ERR,"STACK*WORDS" ELSE R.WORDS = ""
+      READ R.PWORDS FROM F.ERR,"STACK*PWORDS" ELSE R.PWORDS = ""
+      READ R.PORT FROM F.ERR,"TCL|":PORT ELSE R.PORT = ""
+      UCASE = R.PORT<1> + 0
+      SIZE = R.PORT<2>
+      Direction = R.PORT<3>
+      IF Direction = '' THEN Direction = 1
+      MOVE = R.PORT<4>
+      PREPRMPT = R.PORT<5>
+      STMT.DLM = R.PORT<6>
+      IF R.PORT<7> # '' THEN
+         STACK.ID = R.PORT<7>
+         R.PORT<7> = ''
+         WRITE R.PORT ON F.ERR,'TCL|':PORT
+      END ELSE
+         STACK.ID = 'STACK|':PORT
+      END
+      READ R.STACK FROM F.ERR,STACK.ID ELSE R.STACK = ""
+      LSTACK = DCOUNT(R.STACK,@AM)
+      IF STMT.DLM = '' THEN STMT.DLM = ';'
+      GOSUB 16000
+      IF SIZE = "" THEN SIZE = 2000
+      STMT = ""
+10:*
+      LVL = SYSTEM(16)
+      IF SYSTEM(11) THEN
+         PRMPT = STR('|',LVL):'>'
+      END ELSE
+         PRMPT = STR('|',LVL):'|'
+         IF STMT # "" THEN
+            IF STACK.ID # 'STACK|':PORT THEN
+               R.PORT<7> = STACK.ID
+               WRITE R.PORT ON F.ERR,'TCL|':PORT
+            END
+!          ATNAME = "FRED.TCL.STACK ":PORT
+!          ENTER @ATNAME
+         END
+      END
+      STMT = ""
+      IF stack_help_line THEN
+         PRINT "[":PORT:"] OUT or END or EXIT to exit stack.  .H for command help"
+      END
+      IDX = INDEX(PREPRMPT,'@DATE',1)
+      IF IDX THEN
+         PREPRMPT = PREPRMPT[1,IDX-1]:OCONV(DATE(),'D2/'):PREPRMPT[IDX+5,9999]
+      END
+      IDX = INDEX(PREPRMPT,'@TIME',1)
+      IF IDX THEN
+         PREPRMPT = PREPRMPT[1,IDX-1]:OCONV(TIME(),'MTH'):PREPRMPT[IDX+5,9999]
+      END
+      PRINT PREPRMPT:PRMPT:
+100:*
+      ECHO ON
+      INPUT TCL,140:
+      IF TCL[140,1] # "" THEN
+         STMT = STMT:TCL
+         GO 100
+      END
+      STMT = STMT:TCL
+      PRINT
+      IF STMT = "" THEN GO 10
+      IF STMT = '.' THEN STMT = '.L'
+      IF STMT[1,1] = "." THEN STMT = OCONV(STMT,"MCU")
+      IF STMT[1,2] = '.L' THEN GO 1000
+      IF STMT = '.NP' THEN
+         IF stack_help_line = 1 THEN
+            stack_help_line = 0
+         END ELSE
+            stack_help_line = 1
+         END
+      END
+      IF STMT = '.K' OR STMT[1,3] = '.K ' THEN
+         STACKNAME = FIELD(STMT,' ',2)
+         IF STACKNAME = '' THEN
+            PRINT 'Keep stack name : ':
+            INPUT STACKNAME
+            STACKNAME = FIELD(STACKNAME,' ',1)
+            IF STACKNAME = '' THEN GO 10
+         END
+         WRITE R.STACK ON F.ERR,"STACK|":STACKNAME
+         GO 10
+      END
+      IF STMT = '.N' OR STMT[1,3] = '.N ' THEN
+         STACKNAME = FIELD(STMT,' ',2)
+         IF STACKNAME = '' THEN
+            PRINT 'Name stack : ':
+            INPUT STACKNAME
+            STACKNAME = FIELD(STACKNAME,' ',1)
+            IF STACKNAME = '' THEN GO 10
+         END
+         STACK.ID = 'STACK|':STACKNAME
+         WRITE R.STACK ON F.ERR,STACK.ID
+         GO 10
+      END
+      IF STMT = '.G' OR STMT[1,3] = '.G ' THEN
+         STACKNAME = FIELD(STMT,' ',2)
+         IF STACKNAME = '' THEN
+            PRINT 'Get stack name : ':
+            INPUT STACKNAME
+            STACKNAME = FIELD(STACKNAME,' ',1)
+            IF STACKNAME = '' THEN GO 10
+         END
+         READ R.STACK FROM F.ERR,'STACK|':STACKNAME THEN
+            WRITE R.STACK ON F.ERR,STACK.ID
+         END ELSE
+            PRINT 'Stack not on file'
+         END
+         GO 10
+      END
+      IF STMT[1,2] = '.>' THEN
+         R.PORT<5> = STMT[3,999]
+         WRITE R.PORT ON F.ERR,"TCL|":PORT
+         GOSUB 16000
+         GO 10
+      END
+      IF STMT[1,2] = '.;' THEN
+         R.PORT<6> = STMT[3,1]
+         WRITE R.PORT ON F.ERR,"TCL|":PORT
+         IF R.PORT<6> = '' THEN R.PORT<6> = '|'
+         STMT.DLM = R.PORT<6>
+         GO 10
+      END
+      IF STMT = ".W" THEN
+         CRT 'Maintain KEYWORDS to not be stacked...'
+         EXECUTE "FRED FRED_EDITOR_FILE STACK*WORDS (Q"
+         GO 1
+      END
+      IF STMT = ".P" THEN
+         CRT 'Maintain KEYWORDS to stack, but prompt when executed...'
+         EXECUTE "FRED FRED_EDITOR_FILE STACK*PWORDS (Q"
+         GO 1
+      END
+      IF STMT MATCHES "'.'0N" OR STMT MATCHES "'.'0N','1N0X" THEN
+         STMT = '.X':STMT[2,999]
+      END
+      IF STMT MATCHES "'.X'0N" OR STMT MATCHES "'.X'0N','1N0X" THEN GO 2000
+      IF STMT[1,2] = "R/" THEN STMT = ".":STMT
+      IF STMT[1,2] = ".R" THEN GO 3000
+      IF STMT MATCHES "'.E'0N" THEN GO 4000
+      IF STMT = ".U" THEN GO 5000
+      IF STMT MATCHES "'.S'0N" THEN GO 7000
+      IF STMT = ".H" THEN GO 8000
+      IF STMT MATCHES "'.D'0N" OR STMT MATCHES "'.D'0N'-'0N" THEN GO 10000
+      IF STMT = ".F" THEN GO 11000
+      IF STMT = ".M" THEN GO 12000
+      IF STMT = ".?" THEN GO 13000
+      IF STMT MATCHES "'.T'0N" THEN GO 14000
+      IF STMT = '.CLEAN' THEN GO 15000
+      IF STMT = "OUT" OR STMT = "out" THEN STOP
+      IF STMT = "END" OR STMT = "end" THEN STOP
+      IF STMT = "EXIT" OR STMT = "exit" THEN STOP
+      IF STMT[1,1] = '.' OR STMT[1,1] = '/' THEN
+         IF STMT '..' OR STMT = '//' THEN
+            STMT = STMT[1,1]:R.STACK<1>
+         END
+         IDX = INDEX(@AM:R.STACK,@AM:STMT[2,999],1)
+         IF IDX THEN
+            IF STMT[1,1] = '.' THEN
+               STMT = '.X':COUNT(R.STACK[1,IDX],@AM) + 1
+               ASK.RUN = 1
+               GO 2000
+            END ELSE
+               STMT = R.STACK<COUNT(R.STACK[1,IDX],@AM) + 1>
+               PRINT STMT:
+               GO 100
+            END
+         END
+      END
+*
+400:* TRIM STATEMENT
+*
+      LQMARK = COUNT(STMT,'"')
+      IF LQMARK/2 # INT(LQMARK/2) THEN
+         NEW.STMT = STMT
+         GO 500
+      END
+      NEW.STMT = ''
+      LIDX = 1
+      SPC = ''
+      FOR QCNT = 1 TO LQMARK STEP 2
+         IDX = INDEX(STMT,'"',QCNT)
+         IDX2 = INDEX(STMT,'"',QCNT+1)
+         TRIM.STMT = TRIM(STMT[LIDX,IDX-LIDX+1])
+         IF UCASE # 0 THEN
+            TRIM.STMT = OCONV(TRIM.STMT,'MCU')
+         END
+         NEW.STMT = NEW.STMT:SPC:TRIM.STMT:STMT[IDX+1,IDX2-IDX]
+         SPC = ' '
+         LIDX = IDX2 + 1
+      NEXT QCNT
+      TRIM.STMT = TRIM(STMT[LIDX,32267])
+      IF UCASE # 0 THEN
+         TRIM.STMT = OCONV(TRIM.STMT,'MCU')
+      END
+      NEW.STMT = NEW.STMT:SPC:TRIM.STMT
+*
+500:* ADD TO STACK
+*
+      STMT = FIELD(NEW.STMT,STMT.DLM,1)
+      GEXT = 'G1':STMT.DLM:'99'
+      NEXT.STMT = OCONV(NEW.STMT,GEXT)
+      VERB = FIELD(STMT," ",1)
+      LOCATE(STMT,R.STACK;DATT) THEN
+         R.STACK = DELETE(R.STACK,DATT,0,0)
+      END
+      VERB = FIELD(STMT," ",1)
+      LOCATE(VERB,R.WORDS;ATT) ELSE
+         R.STACK = INSERT(R.STACK,1,0,0,STMT)
+      END
+      IF R.STACK<SIZE+1> # "" THEN
+         R.STACK = DELETE(R.STACK,SIZE+1,0,0)
+      END
+      WRITE R.STACK ON F.ERR,STACK.ID
+      LSTACK = DCOUNT(R.STACK,@AM)
+      ESTMT = STMT ; GOSUB 800
+      IF NEXT.STMT # '' THEN
+         STMT = NEXT.STMT
+         GO 400
+      END
+      GO 10
+*
+800:* EXECUTE ALL COMMANDS
+*
+      EVERB = FIELD(ESTMT,' ',1)
+      IF EVERB[1,1] = "?" THEN
+         ESTMT = ESTMT[2,9999]
+         LQ = COUNT(ESTMT,'?')
+         FOR QCNT = 1 TO LQ
+            QIN = INDEX(ESTMT,'?',1)
+            PRINT ESTMT[1,QIN]:
+            INPUT VAL
+            ESTMT = ESTMT[1,QIN-1]:VAL:ESTMT[QIN+1,999]
+            PRINT ESTMT
+         NEXT QCNT
+      END
+850:*
+      LOCATE(EVERB,R.PWORDS;ATT) THEN
+         ASK.RUN = 1
+      END
+      IF ASK.RUN = 1 THEN
+         ASK.RUN = 0
+         PRINT 'RUN? (<CR>/N) : ':
+         INPUT RUNYN
+         IF RUNYN = 'N' THEN RETURN
+      END
+      IF SYSTEM(11) THEN
+         EXECUTE ESTMT PASSLIST RETURNING ERRS
+      END ELSE
+         EXECUTE ESTMT RETURNING ERRS
+      END
+      ERRFLG = 0
+!    IF ERRS<1> = 5 THEN
+!       ERRFLG = 1
+!    END
+!    IF ERRS<1> = 24 THEN
+!       ERRFLG = 1
+!    END
+      IF ERRFLG THEN
+         EXECUTE ESTMT CAPTURING OP
+         OP = TRIM(OP)
+         Replacement = FIELD(OP,'"',2)
+         Replacement = FIELD(Replacement,' ',1)
+         Replacement = ' ':Replacement:' '
+         ESTMT = ESTMT:' '
+         IDX = INDEX(ESTMT,Replacement,1)
+         Replacement = TRIM(Replacement)
+         ESTMT = ESTMT[1,IDX-1]:' "':Replacement:'" ':ESTMT[IDX+LEN(Replacement)+1,999]
+         PRINT 'CHANGED TO >> ':ESTMT
+         ASK.RUN = 1
+         GO 850
+      END
+      RETURN
+*
+1000:* LIST STACK
+*
+      TERM.WIDTH = SYSTEM(2) - 5
+      NOL = STMT[3,99]
+      string_var = FIELD(NOL,'/',2)
+      NOL = FIELD(NOL,'/',1)
+      IF string_var # '' AND NOL = '' THEN
+         NOL = LSTACK
+         ONCE.FLAG = 1
+      END ELSE
+         ONCE.FLAG = 0
+      END
+      IF NOT(NUM(NOL)) OR NOL = "" THEN NOL = 20
+      IF NOL > LSTACK THEN NOL = LSTACK
+      IF Direction = 1 AND ONCE.FLAG = 0 THEN
+         BEG = NOL
+         FIN = 1
+         STP = -1
+      END ELSE
+         BEG = 1
+         FIN = NOL
+         STP = 1
+      END
+      LCNT = 0
+      FOR X = BEG TO FIN STEP STP
+         XX = X
+         IF XX < 100 THEN XX = 0:XX
+         IF XX < 10 THEN XX = 0:XX
+         IF INDEX(R.STACK<X>,string_var,1) = 0 THEN GO 1200
+         LPCMD = INT((LEN(R.STACK<X>) + (TERM.WIDTH-1)) / TERM.WIDTH)
+         LCNT = LCNT + LPCMD
+         IF LCNT >= 23 THEN
+1050:*
+            PRINT @(0):@(-4):"<CR> OR 'EX' OR '.Xn' : ":
+            INPUT CONT,5
+            IF CONT = "EX" THEN GO 10
+            IF CONT[1,2] = ".X" THEN STMT = CONT ; GO 2000
+            IF CONT # "" THEN GO 1050
+            LCNT = LPCMD
+            PRINT
+         END
+         Z = -(TERM.WIDTH-1)
+1100:*
+         Z = Z + TERM.WIDTH
+         IF Z # 1 THEN XX = "   "
+         IF R.STACK<X>[Z,1] # "" THEN
+            PRINT XX:" ":OCONV(R.STACK<X>[Z,TERM.WIDTH],"MCP")
+            GO 1100
+         END
+         IF ONCE.FLAG = 1 THEN GO 10
+1200:*
+      NEXT X
+      GO 10
+*
+2000:* EXECUTE A COMMAND
+*
+      CMD = STMT[3,99]
+      LCMD = COUNT(CMD,",") + 1
+      IF LCMD > 1 THEN
+         CMDS = CMD
+         FOR CCNT = 1 TO LCMD
+            CMD = FIELD(CMDS,",",CCNT)
+            PRINT OCONV(R.STACK<CMD>,"MCP")
+            ESTMT = R.STACK<CMD> ; GOSUB 800
+         NEXT CCNT
+         GO 10
+      END
+      IF NOT(NUM(CMD)) OR CMD = "" THEN CMD = 1
+      IF R.STACK = "" THEN GO 10
+      PRINT OCONV(R.STACK<CMD>,"MCP")
+      IF MOVE = 0 THEN
+         ESTMT = R.STACK<CMD> ; GOSUB 800
+         GO 10
+      END ELSE
+         STMT = R.STACK<CMD>
+         GO 400
+      END
+*
+3000:*  REPLACE COMMAND
+*
+      TERM.WIDTH = SYSTEM(2) - 5
+      CMD=STMT[3,250]
+      EOCMD = "" ; DUPCMD = ""
+      IF CMD[1,1] = "U" THEN CMD = CMD[2,999] ; EOCMD = "*"
+      IF CMD[1,1] = "A" THEN CMD = CMD[2,999] ; DUPCMD = "*"
+      NM=0 ; NB=""
+3100:*
+      NM=NM+1
+      IF CMD[NM,1]="" THEN
+3150:*
+         PRINT "ILLEGAL REPLACE!!"
+         GO 10
+      END
+      IF NOT(NUM(CMD[NM,1])) THEN GO 3200
+      NB=NB:CMD[NM,1]
+      GO 3100
+3200:*
+      IF NB="" THEN NB=1
+      IF R.STACK<NB> = "" THEN GO 3150
+      DLM=CMD[NM,1]
+      IF COUNT(CMD,DLM) > 3 OR COUNT(CMD,DLM) < 2 THEN GO 3150
+      DL2=INDEX(CMD,DLM,2)-NM-1
+      DL3=INDEX(CMD,DLM,3)
+      IF DL3=0 THEN DL3=200
+      Expression=CMD[NM+1,DL2]
+      REP=CMD[DL2+2+NM,DL3-(DL2+2+NM)]
+      Replacement=R.STACK<NB>:BLK300
+      CNT=COUNT(Replacement,Expression)
+      IF CNT=0 THEN GO 3300
+      RALL=CMD[INDEX(CMD,DLM,3)+1,1]
+      IF EOCMD = "*" THEN RALL = "*"
+      IF RALL#"*" THEN CNT=1
+      FOR FIX=CNT TO 1 STEP -1
+         FX=INDEX(Replacement,Expression,FIX)
+         IF FIX=CNT THEN Replacement=Replacement[1,LEN(Replacement)-300]
+         Replacement=Replacement[1,FX-1]:REP:Replacement[FX+LEN(Expression),9990]
+      NEXT FIX
+      IF DUPCMD = "*" THEN
+         R.STACK = INSERT(R.STACK,1,0,0,Replacement)
+         NB = 1
+      END
+      R.STACK<NB>=Replacement
+3300:*
+      XX = NB
+      IF XX < 100 THEN XX = 0:XX
+      IF XX < 10 THEN XX = 0:XX
+      Z = -(TERM.WIDTH-1)
+3400:*
+      Z = Z + TERM.WIDTH
+      IF Z # 1 THEN XX = "   "
+      IF R.STACK<NB>[Z,1] # "" THEN
+         PRINT XX:" ":OCONV(R.STACK<NB>[Z,TERM.WIDTH],"MCP")
+         GO 3400
+      END
+      WRITE R.STACK ON F.ERR,STACK.ID
+      LSTACK = DCOUNT(R.STACK,@AM)
+      GO 10
+*
+4000:* EDIT STACK
+*
+      COMMAND = TRIM(STMT[3,999])
+      IF COMMAND # "" THEN DATA COMMAND
+      EXECUTE 'FRED FRED_EDITOR_FILE ':STACK.ID:' (Q'
+      GO 10
+*
+5000:* UPPER CASE CONVERT
+*
+      IF UCASE = 0 THEN
+         UCASE = 1
+         R.PORT<1> = 1
+         PRINT "All commands will convert to UPPER CASE"
+      END ELSE
+         UCASE = 0
+         R.PORT<1> = 0
+         PRINT "Commands WILL NOT convert to UPPER CASE"
+      END
+5500:*
+      WRITE R.PORT ON F.ERR,"TCL|":PORT
+      GO 10
+*
+7000:* CHANGE STACK SIZE
+*
+      NSIZE = STMT[3,999]
+      IF NSIZE = "" OR NOT(NUM(NSIZE)) THEN NSIZE = SIZE
+      IF NSIZE # INT(NSIZE) THEN NSIZE = SIZE
+      SIZE = NSIZE
+      R.PORT<2> = SIZE
+      PRINT 'Stack size set at ':SIZE
+      GO 5500
+*
+8000:* HELP
+*
+      CRT '.?                - Show parameter settings for stack'
+      CRT '. or .L{nn}       - List last nn commands.  Default 20'
+      CRT '.L{nnnn}/exp      - List commands containing exp.  Option ALL in nnnn lines'
+      CRT '.K name           - Prompt to keep stack snapshot as a named stack'
+      CRT '.N name           - Name current stack and save it'
+      CRT '.G name           - Get named stack and make it current stack'
+      CRT '.>prompt          - Change Prompt to prompt specified'
+      CRT ',;commandsep      - Change command separator to commandsep'
+      CRT '.W                - Maintain KEYWORDS not stacked'
+      CRT '.P                - Maintain KEYWORDS stacked, but prompted for execution'
+      CRT '.X{nn} or .nn     - Execute the nn command on the stack.  Default nn = 1'
+      CRT '.X{nn,mm,pp}      - Execute the nn command, then mm, then pp, etc.'
+      CRT '.R{nn}/exp/rep    - Replace exp with rep on command line nn.  Default nn = 1'
+      CRT '.E                - Edit current stack using FRED editor'
+      CRT '.U                - Toggle UPPERCASE convert'
+      CRT '.S{nnnn}          - Set stack size to nnnn'
+      CRT '.D{nn} or {nn-mm} - Delete stack command(s) nn or nn to mm'
+      CRT '.F                - Toggle direction of stack list'
+      CRT '.M                - Toggle whether commands move to top of stack when executed'
+      CRT '.Tnn              - Move command nn to top of stack'
+      CRT '.CLEAN            - Clean or remove non-verbs from stack'
+      GO 10
+*
+10000:* DELETE A COMMAND
+*
+      DATT = STMT[3,99]
+      DFROM = 'X'
+      DTU = 'X'
+      IF DATT = "" THEN DATT = 1
+      IF DATT MATCHES "0N" THEN
+         DFROM = DATT
+         DTU = DATT
+      END
+      IF DATT MATCHES "0N-0N" THEN
+         DFROM = FIELD(DATT,'-',1)
+         DTU = FIELD(DATT,'-',2)
+      END
+      IF NOT(NUM(DFROM)) OR NOT(NUM(DTU)) THEN
+10100:*
+         PRINT "ILLEGAL DELETE!!"
+         GO 10
+      END
+      IF DTU # INT(DTU) THEN GO 10100
+      IF DFROM # INT(DFROM) THEN GO 10100
+      IF DTU < DFROM THEN GO 10100
+      FOR DATT = DTU TO DFROM STEP -1
+         R.STACK = DELETE(R.STACK,DATT,0,0)
+      NEXT DATT
+      WRITE R.STACK ON F.ERR,STACK.ID
+      GO 10
+*
+11000:* CHANGE DIRECTION
+*
+      IF Direction = 1 THEN
+         Direction = 0
+         R.PORT<3> = 0
+         PRINT "Stack will display from 1 to 20"
+      END ELSE
+         Direction = 1
+         R.PORT<3> = 1
+         PRINT "Stack will display from 20 to 1"
+      END
+      GO 5500
+*
+12000:* MOVE COMMANDS TO TOP?
+*
+      IF MOVE = 0 THEN
+         MOVE = 1
+         R.PORT<4> = 1
+         PRINT "Commands will move to top of stack when executed"
+      END ELSE
+         MOVE = 0
+         R.PORT<4> = 0
+         PRINT "Commands WILL NOT move to top of stack when executed"
+      END
+      GO 5500
+*
+13000:* SHOW STACK DETAILS
+*
+      IF UCASE = 0 THEN UC = "NO" ELSE UC = "YES"
+      IF Direction = 1 THEN UORD = "UP" ELSE UORD = "DOWN"
+      IF MOVE = 0 THEN MCOM = "NO" ELSE MCOM = "YES"
+      PRINT 'STACK NAME ':STACK.ID
+      PRINT
+      PRINT "(.U) UPPER CASE CONVERT ....... ":UC
+      PRINT "(.S) STACK SIZE ............... ":SIZE
+      PRINT "(.F) DIRECTION ................ ":UORD
+      PRINT "(.M) MOVE COMMANDS ............ ":MCOM
+      PRINT "(.;) STATEMENT DELIMITER ...... ":STMT.DLM
+      PRINT "(.>) PROMPT ................... ":PREPRMPT
+      GO 10
+*
+14000:*
+*
+      TATT = STMT[3,99]
+      IF TATT = "" THEN GO 10
+      IF NOT(NUM(TATT)) THEN
+14100:*
+         PRINT "ILLEGAL TOP COMMAND!!"
+         GO 10
+      END
+      IF TATT # INT(TATT) THEN GO 14100
+      IF TATT > DCOUNT(R.STACK,@AM) THEN GO 14100
+      TCMD = R.STACK<TATT>
+      R.STACK = DELETE(R.STACK,TATT,0,0)
+      R.STACK = TCMD:@AM:R.STACK
+      WRITE R.STACK ON F.ERR,STACK.ID
+      GO 10
+*
+15000:* REMOVE [3] VERB's FROM STACK
+*
+      LSTACK = DCOUNT(R.STACK,@AM)
+      FOR CLEAN = LSTACK TO 1 STEP -1
+         VERB = FIELD(R.STACK<CLEAN>,' ',1)
+         IF VERB[1,1] = "?" THEN
+            VERB = VERB[2,99]
+         END
+         LOCATE(VERB,R.WORDS;ATT) THEN VERB = 'NOT.IN.THE.MD'
+         IF OCONV(VERB,'TMD;X;0;0') = '' THEN
+            R.STACK = DELETE(R.STACK,CLEAN,0,0)
+            LSTACK = LSTACK - 1
+         END
+      NEXT CLEAN
+      WRITE R.STACK ON F.ERR,STACK.ID
+      GO 1000
+*
+16000:* CHANGE PROMPT
+*
+      PREPRMPT = R.PORT<5>
+      IDX = INDEX(PREPRMPT,'@WHO',1)
+      IF IDX THEN
+         PREPRMPT = PREPRMPT[1,IDX-1]:WHO:PREPRMPT[IDX+4,9999]
+      END
+      IDX = INDEX(PREPRMPT,'@ACCT',1)
+      IF IDX THEN
+         PREPRMPT = PREPRMPT[1,IDX-1]:ACCT:PREPRMPT[IDX+5,9999]
+      END
+      RETURN
+   END                                   ; * Needed for some versions of UniVerse
