@@ -1,4 +1,0 @@
-    SUBROUTINE FRED.FIND.SOURCE.FILE.JBASE.SUB(source_id,source_file_name)
-    DEFFUN JBASESOURCEFILE
-    source_file_name = JBASESOURCEFILE(source_id)
-    RETURN
