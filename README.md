@@ -7,50 +7,52 @@ is mounted on the host at /home/dockeradmin/PBD
 ## Quick Start
 In your home directory, add this repo
 
-  $ `git clone https://github.com/MVMentees/Pickleball.git`
+`git clone https://github.com/MVMentees/Pickleball.git`
 
 Add your own branch
 
-  $ `git branch -c *yourname*`
-
-## Add DIR type files to the repo
-You will notice that D_xxx files are in the repo.  These are DICT files which have been moved to the
-repo and then symbolic linked from the docker volume.   There is also the PB.BP file which is the 
-DIR type file used to store the Pickleball program source.  It to is symbolic linked from the repo.
-
-The files exist here in the repo, but in the docker volume they have this type of a link
-```text
- PB.BP -> /home/dockeradmin/Pickleball/PB.BP
+```
+cd ~/Pickleball
+git branch -c *yourname*
 ```
 
-This is achieved by first creating the file in the docker, then moving the file to the repo,
-then setting the symbolic link in its place
+## To work with docker
+In order for this repo (and others) to work with docker, you will need to change the group to a group that is available from docker.  
 
-### Source code files
+The docker groups are offset by 99999, so a group called dshare needs to be created on the host as 150000 and on the docker as 50001
 
-From UniVerse you can create the file
-```
-ICREATE.FILE NEWBP 19
-```
-Then on the host volume in Linux move it and create a symbolic link in it's place
+150000 - 99999 = 50001
 
-```
-mv /home/dockeradmin/PBD/PICKLE/PB.BP /home/dockeradmin/Pickleball/PB.BP
-ln -s /home/dockeradmin/Pickle/PB.BP /home/dockeradmin/PBD/PICKLE/PB.BP
-```
-When this is done, the repo will keep all the source and the docker will simply point to that source.
+This is accomplished with 5 steps
 
-### DICT files
+  1. Add the group dshare to the host as 150000
+     
+     `sudo groupadd -g 150000 dshare`
+  
+  2. Add that share to your user on the host
 
-From UniVerse you create the data file
-```
-ICREATE.FILE LOCATIONS 3 16 59
-```
-Then on the host put the DICT \(D_filename\) in the repo as a DIR file and replace the hash file on the docker volume with a symbolic link
+     `sudo usermod -aG dshare dockeradmin`
+  
+  3. Change the group of this repo to dshare
 
-```
-mkdir -m777 /home/dockeradmin/Pickle/D_LOCATION
-rm /home/dockeradmin/PBD/PICKLE/D_LOCATION
-ln -s /home/dockeradmin/Pickle/D_LOCATION /home/dockeradmin/PBD/PICKLE/D_LOCATION
-```
-When this is done, the repo will keep all the DICT items and the docker will simply point to those items.
+     `sudo chgrp -R dshare ~/Pickleball` 
+  
+  4. In the project docker add the group and add that group to user1, user2 and user3
+  
+     ```
+     vi add_users_groups  (add these lines to the bottom)
+
+     :dshare:50001
+     user1:dshare
+     user2:dshare
+     user3:dshare
+     ```
+   
+   5. In the yaml file for the project docker add this github repo directory
+    
+      ```
+      vi universe-pickleball.yaml  (add this to the end in the volume area)
+
+      - ~/Pickleball:/home/dockeradmin/Pickleball
+      ```
+
