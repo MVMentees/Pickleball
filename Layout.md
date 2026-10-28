@@ -8,7 +8,7 @@ In this project, we will be creating a pickleball system.   Initial thoughts for
 * LastName
 * Email
 * Phone
-* Mail Address
+* MailAddress
 * ContactMethod (Email,Phone,Mail, preferred method first)
 * SkillLevel (1 to 10)
 * Ranking
