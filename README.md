@@ -3,7 +3,9 @@ Here is the first we hope of many projects for us to tackle with MV.
 
 This works in conjunction with the **universe-pickleball** docker image and assumes that docker image has been loaded.
 
-If you have not yet loaded that docker image,  It is available here https://github.com/MVMentees/MV-Dockers/blob/main/build_universe-pickleball.zip
+If you have not yet loaded that docker image, it is here
+
+<a href="https://github.com/MVMentees/MV-Dockers/blob/main/build_universe-pickleball.zip" target="_blank" rel="noopener noreferrer">Download the file</a>
 
 The volume for that docker will be mounted on the host at ~/my_universe-pickleball as is defaulted in the .yaml provided.
 
