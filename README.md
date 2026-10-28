@@ -5,7 +5,7 @@ This works in conjunction with the **universe-pickleball** docker image and assu
 
 If you have not yet loaded that docker image, it is here
 
-<a href="https://github.com/MVMentees/MV-Dockers/blob/main/build_universe-pickleball.zip" target="_blank" rel="noopener noreferrer">Download the file</a>
+[Download the file](https://github.com/MVMentees/MV-Dockers/blob/main/build_universe-pickleball.zip)
 
 The volume for that docker will be mounted on the host at ~/my_universe-pickleball as is defaulted in the .yaml provided.
 
