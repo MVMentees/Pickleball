@@ -1,10 +1,16 @@
 # Pickleball project
 Here is the first we hope of many projects for us to tackle with MV.
 
-This works in conjunction with the universe-pickleball docker image and assumes the volume for that docker
-is mounted on the host at ~/my_universe-pickleball as is defaulted in the .yaml provided.
+This works in conjunction with the **universe-pickleball** docker image and assumes that docker image has been loaded.
 
-## Quick Start
+If you have not yet loaded that docker image,  It is available here https://github.com/MVMentees/MV-Dockers/blob/main/build_universe-pickleball.zip
+
+The volume for that docker will be mounted on the host at ~/my_universe-pickleball as is defaulted in the .yaml provided.
+
+You will want to add the Pickleball git repo as a second volume.  Details below
+
+## Adding the pickleball project repo to your docker
+
 In your home directory, add this repo
 
 `git clone https://github.com/MVMentees/Pickleball.git`
