@@ -19,7 +19,7 @@ In your home directory, add this repo
 
 `git clone https://github.com/MVMentees/Pickleball.git`
 
-Add your own branch and switch to it
+Add your own branch and switch to it:
 
 In my case, I created branch "danell"
 ```
@@ -30,9 +30,9 @@ git switch -c danell
 git push -u origin danell
 ```
 
-If later you clone the repo and have already created your own branch you would just need to switch to that branch.
+If later you clone the repo to another computer and have already created your own branch you would just need to switch to that branch.
 
-The commands following the clone would just be to track your branch
+The commands following the clone would just be to track your branch:
 
 `git switch --track origin/danell`
 
