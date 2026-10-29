@@ -83,13 +83,17 @@ This is accomplished with 5 steps
 
 1. Check if the container was/is already running and if so, restart it
 
-    `docker ps` will show if any containers are running
+    Check if it is already running:
 
-    `docker rm -f my-universe-pickleball` will remove the existing container.
+   `docker ps`
 
-2. Run the updated container with docker compose 
+    IF so, remove the existing one so you can restart with these changes:
 
-    `docker compose -f ./universe-pickleball,yaml up -d`
+    `docker rm -f my-universe-pickleball`
 
+3. Run the updated container with docker compose 
 
+    `docker compose -f ./universe-pickleball.yaml up -d`
+
+***NOW WE ARE READY TO START THE PICKLEBALL ADVENTURE***
     
