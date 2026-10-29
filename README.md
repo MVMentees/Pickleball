@@ -7,6 +7,8 @@ If you have not yet loaded that docker image, it is here
 
 [Download the file](https://github.com/MVMentees/MV-Dockers/blob/main/build_universe-pickleball.zip)
 
+Click the download link from your Linux console and open the download folder and **Extract all**
+
 The volume for that docker will be mounted on the host at ~/my_universe-pickleball as is defaulted in the .yaml provided.
 
 You will want to add the Pickleball git repo as a second volume.  Details below
