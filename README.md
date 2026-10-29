@@ -24,9 +24,17 @@ Add your own branch and switch to it
 In my case, I created branch "danell"
 ```
 cd ~/Pickleball
-git branch -c danell
-git switch danell
+git switch main
+git pull
+git switch -c danell
+git push -u origin danell
 ```
+
+If later you clone the repo and have already created your own branch you would just need to switch to that branch.
+
+The commands following the clone would just be to track your branch
+
+`git switch --track origin/danell`
 
 ## To work with docker
 In order for this repo (and others) to work with docker, you will need to change the group to a group that is available from docker.  
