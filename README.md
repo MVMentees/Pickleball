@@ -45,7 +45,7 @@ The docker groups are offset by 99999, so a group called dshare needs to be crea
 
 ### Add group and Pickleball volume
 
-This is accomplished with 5 steps
+This is accomplished with 6 steps
 
   1. Add the group dshare to the host as 150000
      
@@ -57,9 +57,13 @@ This is accomplished with 5 steps
   
   3. Change the group of this repo to dshare
 
-     `sudo chgrp -R dshare ~/Pickleball` 
+     `sudo chgrp -R dshare ~/Pickleball`
+
+  4. Change permissions to 775 for the repo
+
+     `sudo chmod -R 775 ~/Pickleball`
   
-  4. In the project docker add the group and add that group to user1, user2 and user3
+  6. In the project docker add the group and add that group to user1, user2 and user3
   
      ```
      cd ~/Downloads/build_universe-pickleball        (this is where it is by default)
@@ -71,12 +75,12 @@ This is accomplished with 5 steps
      user3:dshare
      ```
    
-   5. In the yaml file for the universe-pickleball docker add this github repo directory.
+   7. In the yaml file for the universe-pickleball docker add this github repo directory.
 
       In the same directory as step 4 and assuming your home directory is /home/dockeradmin
       ```    
       vi universe-pickleball.yaml  (add this to the end in the volume area)
-        - ~/Pickleball:/home/dockeradmin/Pickleball
+        - ~/Pickleball:/home/dockeradmin/Pickleball:z
       ```
 
 ### Start or restart the docker via the yaml
