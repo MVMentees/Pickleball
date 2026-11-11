@@ -28,14 +28,16 @@ sudo ./mvis_install.sh install
 
 From a browser that can access the host go to the host address port 7077
 
+`http://192.168.56.2:7077`
+
 Login as **admin** with password of **admin**
 
 ## Add PICKLE as a new Account
 
 Configuration >> Accounts **+Add Account**
-
-| Account Name : | Pickleball |
+| Prompt | Entry|
 |----------------|------------|
+| Account Name : | Pickleball |
 | MV Server Name: | 192.168.56.2|
 | MV Server Port: | 31501|
 | Account Path: | /mystuff/PICKLE|
@@ -49,6 +51,8 @@ Click on [Test Connection] and it should be successful
 
 Go to the **[API Information]** tab
 
+| Prompt | Entry|
+|----------------|------------|
 | API Name: | pickleball_API|
 | API Title: | API for Pickleball scheduling|
 | Version : | 1.0|
