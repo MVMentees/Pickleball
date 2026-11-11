@@ -45,7 +45,7 @@ Configuration >> Accounts **+Add Account**
 |User ID: | user1|
 | User Password: | user1|
 
-Click on [Test Connection] and it should be successful
+Click on **[Test Connection]** and it should be successful
 
 ## Define the API metadata
 
