@@ -2,7 +2,7 @@
 
 This is the layer between web based programs and the UniVerse database.   We will put this on the same Linux box as we have the universe-pickleball docker and Pickleball git repo
 
-##Download and install the MVIS server
+## Download and install the MVIS server
 
 The MVIS server is free for Universe and can be retrieved from the download site with wget from the Linux command line.  This process will download and install the mvis server
 
