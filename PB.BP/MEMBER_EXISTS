@@ -1,0 +1,11 @@
+      SUBROUTINE MEMBER_EXISTS(member_id,yes_no,error_message)
+      OPEN 'MEMBER' TO filevar_member THEN
+         READ member_exists FROM filevar_member,member_id THEN
+            yes_no = 'yes'
+         END ELSE
+            yes_no = 'no'
+         END
+      END ELSE
+         error_message = 'Cannot open MEMBER file'
+      END
+      RETURN
