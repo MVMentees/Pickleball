@@ -55,7 +55,7 @@ Go to the **[API Information]** tab
 |----------------|------------|
 | API Name: | pickleball_API|
 | API Title: | API for Pickleball scheduling|
-| Version : | 1.0|
+| Version : | 1.0|
  
 Click on **[OK]**
 
@@ -71,5 +71,5 @@ Click **<** to expand **Pickleball**
 
 Click **<** to expand **Subroutine Resources**
 
-Click *+Add Subroutine*
+Click **+Add Subroutine**
 
