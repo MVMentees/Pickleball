@@ -42,6 +42,7 @@ Configuration >> Accounts **+Add Account**
 | MV Server Port: | 31501|
 | Account Path: | /mystuff/PICKLE|
 | Connection String : | uvcs|
+|MVIS Definition Path: | /mystuff/MVISDEFN|
 |User ID: | user1|
 | User Password: | user1|
 
