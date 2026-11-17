@@ -1,0 +1,61 @@
+      SUBROUTINE MEMBER_LOGIN(member_id,entered_password,yes_no,error_message)
+* Member login verification program for REST
+      yes_no = 'no'
+      error_message = ''
+      OPEN 'MEMBER_WEB' TO filevar_member_web THEN
+         READV stored_hash FROM filevar_member_web,member_id,1 ELSE
+            error_message = 'This member/password not valid'
+            GO EXITSUB
+         END
+      END ELSE
+         error_message = 'Cannot open MEMBER file. Contact system administrator'
+         GO EXITSUB
+      END
+      builtinsModule = PyImport("builtins")
+      IF @PYEXCEPTIONTYPE # "" THEN
+         error_number = 1
+         GOSUB HANDLEPYERR
+      END
+      argon2Module = PyImport("argon2")
+      IF @PYEXCEPTIONTYPE # "" THEN
+         error_number = 2
+         GOSUB HANDLEPYERR
+      END
+      passwordHasherClass = PyGetAttr(argon2Module, "PasswordHasher")
+      IF @PYEXCEPTIONTYPE # "" THEN
+         error_number = 3
+         GOSUB HANDLEPYERR
+      END
+      passwordHasher = PyCall(passwordHasherClass)
+      IF @PYEXCEPTIONTYPE # "" THEN
+         error_number = 4
+         GOSUB HANDLEPYERR
+      END
+      verifyResult = PyCallMethod(passwordHasher, "verify", stored_hash, entered_password)
+      IF @PYEXCEPTIONTYPE # "" AND @PYEXCEPTIONTYPE  # "VerifyMismatchError" THEN
+         error_number = 5
+         GOSUB HANDLEPYERR
+      END
+      verifyHash = PyCallMethod(builtinsModule,"str",verifyResult)
+      IF @PYEXCEPTIONTYPE # "" THEN
+         error_number = 6
+         GOSUB HANDLEPYERR
+      END
+      IF verifyHash = 1 THEN yes_no = 'yes'
+*
+EXITSUB:
+*
+      RETURN
+*
+HANDLEPYERR:
+*
+      CRT STR('=',79)
+      CRT 'SUBROUTINE HASH_PASSWORD'
+      CRT 'Error number ':error_number
+      CRT STR('-',79)
+      CRT 'PYEXCEPTION TYPE "':@PYEXCEPTIONTYPE:'"'
+      CRT 'PYEXCEPTION MESSAGE...'
+      CRT @PYEXCEPTIONMSG
+      CRT 'PEXCEPTION TRACE BACK...'
+      CRT @PYEXCEPTIONTRACEBACK
+      STOP
