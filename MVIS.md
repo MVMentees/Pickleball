@@ -42,7 +42,6 @@ Configuration >> Accounts **+Add Account**
 | MV Server Port: | 31501|
 | Account Path: | /mystuff/PICKLE|
 | Connection String : | uvcs|
-|MVIS Definition Path: | /mystuff/MVISDEFN|
 |User ID: | user1|
 | User Password: | user1|
 
@@ -64,6 +63,48 @@ It will prompt "The changes will be applied after restarting account. Would you 
 
 Click **[Yes]**
 
+## Change the MVISDEFN account to be in mystuff
+
+1. Log into the docker as root with password root
+
+   `telnet localhost 2301`
+
+2. Move the /usr/uv/MVISDEFN account from /usr/uv to /mystuff
+
+   `mv /usr/uv/MVISDEFN /mystuff/.`
+
+3. Update the UV.ACCOUNT item
+
+   ```
+   cd /usr/uv
+   /usr/uv/bin/uv
+   AE UV.ACCOUNT MVISDEFN
+   0011 /usr/uv/MVISDEFN
+   .C;/usr/uv;/mystuff
+   .FI
+   ```
+
+4. Exit the docker and change the /opt/cm/servers.yaml file
+
+   ```
+   vi /opt/cm/servers.yaml
+
+   Change the /usr/uv/MVISDEFN to /mystuff/MVISDEFN
+   ```
+
+5. Reboot the Rocky 9 virtual machine and restart the docker and MVIS server
+
+   ```
+   sudo shutdown -r now
+
+   When it reboots...
+
+   docker compose -f ./universe-pickleball.yaml up -d
+   cd /opt/cm
+   sudo ./start-cm.sh
+   sudo ./start-admin.sh
+   ```
+   
 ## Configure REST server
 
 REST Server >> Accounts
