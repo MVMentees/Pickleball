@@ -1,0 +1,5 @@
+*
+* Test program for password hash
+      CRT 'ENTER PASSWORD ': ; INPUT in_password
+      CALL HASH_PASSWORD(in_password,hash_return)
+      CRT hash_return

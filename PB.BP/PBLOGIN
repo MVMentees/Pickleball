@@ -1,4 +1,7 @@
+*
+* Initial program when you login to PICKLE account
       CRT
       CRT
-      CRT 'Welcome to the new Pickleball program V1.0'
+      CRT 'Welcome to the new Pickleball program V1.1'
       CRT
+      EXECUTE 'sh -c "/usr/uv/python/bin/python3 -m pip install --upgrade argon2-cffi"'
