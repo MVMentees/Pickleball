@@ -99,6 +99,7 @@ Click **[Yes]**
 
    When it reboots...
 
+   cd to the docker directory
    docker compose -f ./universe-pickleball.yaml up -d
    cd /opt/cm
    sudo ./start-cm.sh
