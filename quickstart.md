@@ -1,4 +1,4 @@
-# Quick start for with this project
+# Quick start for working with this project
 
 ## Create a VirtualBox Linux virtual to run docker
 
