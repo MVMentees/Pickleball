@@ -25,27 +25,28 @@ You will receive an email with the download link.  You will need to add that dow
 ## Get the project docker build from the MVMentees hub
 
 Load the zip for the project you want to start
-
+`
 In this case the build_universe-pickleball.zip
 
 1. In your home directory, access the docker from github
-    
-    ```
-    cd ~
-    wget -O build_universe-pickleball.zip \
-    https://raw.githubusercontent.com/MVMentees/MV-Dockers/main/build_universe-pickleball.zip
-    ```
-
+   
+   ```
+   cd ~
+   wget -O build_universe-pickleball.zip \
+   https://raw.githubusercontent.com/MVMentees/MV-Dockers/main/build_universe-pickleball.zip
+   ```
+   
 2. Create a docker directory and unzip the build
-    
+   
     ```
     mkdir -m777 ~/pbdocker
     cd ~/pbdocker
     unzip ~/build_universe-pickleball.zip
     ```
 
-3. Add the UVTE from the Download above
 
+3. Add the UVTE from the download above
+   
     ```
     cd ~/pbdocker
     cp ~/Downloads/UVTE_LINUXX86_14.2.1.zip .
@@ -54,14 +55,14 @@ In this case the build_universe-pickleball.zip
 ## Clone the github for the new project
 
 1. Run the got clone command
-
+   
     ```
     cd ~
     git clone git@github.com:MVMentees/Pickleball.git
     ```
-    
-2. Add your own branch \(In this case "danell"\)
-
+   
+2. Add your own Branch \(In this case "danell'\)
+   
     ```
     cd ~/Pickleball
     git switch main
@@ -69,6 +70,7 @@ In this case the build_universe-pickleball.zip
     git switch -c danell
     git push -u origin danell
     ```
+
 
 ## Setup the docker to work with the git repo
 
@@ -85,39 +87,40 @@ In this case the build_universe-pickleball.zip
     `sudo chgrp -R dshare ~/Pickleball`
 
 4. Change permissions to 775 for repo
-
+    
     `sudo chmod -R 775 ~/Pickleball`
 
 ## Add dshare group to docker and docker users
 
-    ```
-    vi ~/pbdocker/add_users_groups
-    <Shift>G  <Shift>A  <Enter>         will add to the bottom
-    :dshare:50001
-    user1:dshare
-    user2:dshare
-    user3:dshare
-    <Esc> :wq                           will write the item
-    ```
+```
+vi ~/pbdocker/add_users_groups
+<Shift>G  <Shift>A  <Enter>         will add to the bottom
+:dshare:50001
+user1:dshare
+user2:dshare
+user3:dshare
+<Esc> :wq                           will write the item
+ ```
 
 ## Add Volume for repo to docker compose yaml
 
-    ```
-    vi ~/pbdocker/universe-pickleball.yaml
-    <Shift>G  <Shift>A  <Enter>         will add to the bottom
-    - ~/Pickleball:/home/dockeradmin/Pickleball:z
-    <Esc> :wq                           will write the item 
+```
+vi ~/pbdocker/universe-pickleball.yaml
+<Shift>G  <Shift>A  <Enter>         will add to the bottom
+- ~/Pickleball:/home/dockeradmin/Pickleball:z
+<Esc> :wq                           will write the item
+```
 
 ## Run the docker compose yaml to start the machine
 
-    ```
-    cd ~/pbdocker
-    docker compose -f ./universe-pickleball.yaml up -d
-    ```
+```
+cd ~/pbdocker
+docker compose -f ./universe-pickleball.yaml up -d
+```
 
 ## Telnet to the machine and login as user1 with password user1
 
-    `telnet localhost 2301`
+`telnet localhost 2301`
 
 ## Setup the repo
 
@@ -175,11 +178,7 @@ In this case the build_universe-pickleball.zip
 6. Load the MVIS server to allow for web development
 
     Exit the docker by typing **quit** at ECL
+
+    Then, use the MVIS.md document to guide you on the installation
     
     [See here for details](https://github.com/MVMentees/Pickleball/blob/main/MVIS.md)
-
-
-    
-
-
-
