@@ -8,7 +8,7 @@
             GO EXITSUB
          END
       END ELSE
-         error_message = 'Cannot open MEMBER file. Contact system administrator'
+         error_message = 'Cannot open internal MEMBER password file. Contact system administrator'
          GO EXITSUB
       END
       builtinsModule = PyImport("builtins")
