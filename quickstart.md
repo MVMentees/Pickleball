@@ -88,7 +88,7 @@ In this case the build_universe-pickleball.zip
 
 4. Change permissions to 775 for repo
     
-    `sudo chmod -R 775 ~/Pickleball`
+    `sudo chmod -R 2775 ~/Pickleball`
 
 ## Add dshare group to docker and docker users
 
