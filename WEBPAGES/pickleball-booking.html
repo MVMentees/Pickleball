@@ -1,2 +1,1177 @@
-<h1>You are booking</h1>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="theme-color" content="#f4f6f2">
+    <title>Rally — Court Booking</title>
 
+    <style>
+      :root {
+        --ink: #17251e;
+        --muted: #6b786f;
+        --green: #155e43;
+        --mint: #e1f1e7;
+        --lime: #d4f16a;
+        --paper: #f4f6f2;
+        --white: #fff;
+        --line: #e4e9e3;
+        --orange: #df7544;
+        --shadow: 0 12px 36px #183d2810;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        background: var(--paper);
+        color: var(--ink);
+        font: 15px/1.45 Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+      }
+
+      button,
+      input,
+      select {
+        font: inherit;
+      }
+
+      button {
+        cursor: pointer;
+      }
+
+      .app {
+        max-width: 1120px;
+        margin: auto;
+        padding: 22px 30px 40px;
+      }
+
+      .top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 28px;
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 11px;
+        font-size: 20px;
+        font-weight: 800;
+        letter-spacing: -0.6px;
+      }
+
+      .logo {
+        display: grid;
+        width: 38px;
+        height: 38px;
+        place-items: center;
+        border-radius: 13px;
+        background: var(--green);
+        color: var(--lime);
+        font-size: 18px;
+      }
+
+      .topright {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .avatar {
+        width: 40px;
+        height: 40px;
+        border: 0;
+        border-radius: 99px;
+        background: #e8ede7;
+        color: var(--green);
+        font-weight: 800;
+      }
+
+      .link {
+        border: 0;
+        padding: 10px;
+        background: transparent;
+        color: var(--muted);
+        font-weight: 650;
+      }
+
+      h1 {
+        margin: 0 0 8px;
+        font-size: clamp(30px, 5vw, 44px);
+        letter-spacing: -1.8px;
+        line-height: 1.08;
+      }
+
+      .sub {
+        margin: 0;
+        color: var(--muted);
+      }
+
+      .intro {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        margin-bottom: 25px;
+      }
+
+      .badge {
+        border-radius: 20px;
+        padding: 8px 12px;
+        background: #e8eee7;
+        color: #496153;
+        font-size: 12px;
+        font-weight: 700;
+      }
+
+      .layout {
+        display: grid;
+        grid-template-columns: minmax(0, 1.55fr) minmax(270px, 0.8fr);
+        align-items: start;
+        gap: 20px;
+      }
+
+      .panel {
+        border: 1px solid #e8ece7;
+        border-radius: 22px;
+        background: var(--white);
+        box-shadow: var(--shadow);
+      }
+
+      .booking {
+        padding: 24px;
+      }
+
+      .panelhead {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 19px;
+      }
+
+      .panelhead h2 {
+        margin: 0;
+        font-size: 18px;
+        letter-spacing: -0.4px;
+      }
+
+      .month {
+        color: var(--muted);
+        font-size: 13px;
+        font-weight: 650;
+      }
+
+      .datebar {
+        display: flex;
+        gap: 9px;
+        overflow: auto;
+        padding: 2px 1px 12px;
+        scrollbar-width: none;
+      }
+
+      .datebar::-webkit-scrollbar {
+        display: none;
+      }
+
+      .day {
+        flex: 0 0 66px;
+        border: 1px solid var(--line);
+        border-radius: 15px;
+        padding: 10px 5px;
+        background: white;
+        color: var(--muted);
+        text-align: center;
+      }
+
+      .day small {
+        display: block;
+        font-size: 11px;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+      }
+
+      .day strong {
+        display: block;
+        margin: 3px 0;
+        color: var(--ink);
+        font-size: 19px;
+      }
+
+      .day.active {
+        border-color: var(--green);
+        background: var(--green);
+        color: #dce9df;
+      }
+
+      .day.active strong {
+        color: white;
+      }
+
+      .day.today:not(.active) {
+        border-color: var(--green);
+      }
+
+      .controls {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin: 11px 0 14px;
+      }
+
+      .controls h3 {
+        margin: 0;
+        font-size: 14px;
+      }
+
+      .select {
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        padding: 9px 28px 9px 11px;
+        background: #fff;
+        color: var(--ink);
+        font-size: 13px;
+      }
+
+      .courts {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .court {
+        border: 1px solid var(--line);
+        border-radius: 17px;
+        padding: 15px 16px;
+      }
+
+      .courtrow {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 12px;
+      }
+
+      .courtname {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        font-weight: 750;
+      }
+
+      .courtmark {
+        display: grid;
+        width: 26px;
+        height: 26px;
+        place-items: center;
+        border-radius: 8px;
+        background: var(--mint);
+        color: var(--green);
+        font-size: 13px;
+      }
+
+      .courtmeta {
+        color: var(--muted);
+        font-size: 12px;
+      }
+
+      .slots {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 8px;
+      }
+
+      .slot {
+        border: 1px solid #dce5dc;
+        border-radius: 10px;
+        padding: 9px 3px;
+        background: #fafffb;
+        color: var(--green);
+        font-size: 12px;
+        font-weight: 700;
+      }
+
+      .slot:hover {
+        border-color: #a9cfb2;
+        background: var(--mint);
+      }
+
+      .slot.busy {
+        border-color: #eceeeb;
+        background: #f1f2ef;
+        color: #a1a9a2;
+        text-decoration: line-through;
+        cursor: not-allowed;
+      }
+
+      .slot.mine {
+        border-color: #f0d4c3;
+        background: #fff3e9;
+        color: #a2542d;
+      }
+
+      .legend {
+        display: flex;
+        gap: 18px;
+        margin: 16px 0 0;
+        color: var(--muted);
+        font-size: 11px;
+      }
+
+      .dot {
+        display: inline-block;
+        width: 8px;
+        height: 8px;
+        margin-right: 6px;
+        border-radius: 50%;
+        background: #83bd91;
+      }
+
+      .dot.busydot {
+        background: #c5cbc5;
+      }
+
+      .dot.minedot {
+        background: #e79870;
+      }
+
+      .sidebar {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+      }
+
+      .upcoming {
+        padding: 21px;
+      }
+
+      .upcoming h2 {
+        margin: 0 0 15px;
+        font-size: 17px;
+      }
+
+      .reslist {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .res {
+        border: 1px solid var(--line);
+        border-radius: 15px;
+        padding: 13px;
+      }
+
+      .reshead {
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+      }
+
+      .res strong {
+        font-size: 14px;
+      }
+
+      .res time {
+        color: var(--muted);
+        font-size: 12px;
+      }
+
+      .resfoot {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-top: 10px;
+      }
+
+      .resdate {
+        color: var(--muted);
+        font-size: 12px;
+      }
+
+      .cancel {
+        border: 0;
+        padding: 5px;
+        background: transparent;
+        color: #b35239;
+        font-size: 12px;
+        font-weight: 700;
+      }
+
+      .empty {
+        border-radius: 13px;
+        padding: 16px;
+        background: #f7f9f6;
+        color: var(--muted);
+        font-size: 13px;
+      }
+
+      .tip {
+        position: relative;
+        overflow: hidden;
+        border-radius: 20px;
+        padding: 20px;
+        background: var(--green);
+        color: #fff;
+      }
+
+      .tip::after {
+        position: absolute;
+        top: -25px;
+        right: -22px;
+        width: 110px;
+        height: 110px;
+        border: 1px solid #ffffff22;
+        border-radius: 50%;
+        box-shadow: 0 0 0 14px #ffffff0d, 0 0 0 29px #ffffff08;
+        content: "";
+      }
+
+      .tiplabel {
+        color: #c7e2cf;
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 1.2px;
+        text-transform: uppercase;
+      }
+
+      .tip p {
+        max-width: 220px;
+        margin: 9px 0 0;
+        font-size: 17px;
+        font-weight: 700;
+        line-height: 1.35;
+      }
+
+      .notice {
+        position: fixed;
+        z-index: 5;
+        bottom: 24px;
+        left: 50%;
+        transform: translate(-50%, 20px);
+        padding: 12px 17px;
+        border-radius: 12px;
+        background: #17251e;
+        color: white;
+        box-shadow: var(--shadow);
+        font-size: 13px;
+        opacity: 0;
+        pointer-events: none;
+        transition: 0.2s;
+      }
+
+      .notice.show {
+        transform: translate(-50%, 0);
+        opacity: 1;
+      }
+
+      .notice.error {
+        background: #9a3728;
+      }
+
+      .footer {
+        margin-top: 27px;
+        color: #8b968d;
+        font-size: 11px;
+        text-align: center;
+      }
+
+      dialog {
+        width: min(460px, calc(100vw - 28px));
+        border: 0;
+        border-radius: 20px;
+        padding: 24px;
+        box-shadow: 0 24px 80px #10231944;
+      }
+
+      dialog::backdrop {
+        background: #12251dcc;
+        backdrop-filter: blur(3px);
+      }
+
+      dialog h2 {
+        margin: 0 0 6px;
+      }
+
+      dialog p {
+        margin: 0 0 18px;
+        color: var(--muted);
+        font-size: 13px;
+      }
+
+      .field {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        margin: 13px 0;
+      }
+
+      .field label {
+        font-size: 12px;
+        font-weight: 750;
+      }
+
+      .field input {
+        width: 100%;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        padding: 11px;
+      }
+
+      .actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 9px;
+        margin-top: 20px;
+      }
+
+      .btn {
+        border: 0;
+        border-radius: 11px;
+        padding: 11px 16px;
+        font-weight: 750;
+      }
+
+      .btn.secondary {
+        background: #eef1ed;
+        color: var(--ink);
+      }
+
+      .btn.primary {
+        background: var(--green);
+        color: white;
+      }
+
+      .loading {
+        padding: 28px;
+        color: var(--muted);
+        text-align: center;
+      }
+
+      @media (max-width: 750px) {
+        .app {
+          padding: 15px 14px 28px;
+        }
+
+        .top {
+          margin-bottom: 24px;
+        }
+
+        .topright .link {
+          display: none;
+        }
+
+        .intro {
+          display: block;
+          margin-bottom: 19px;
+        }
+
+        .badge {
+          display: inline-block;
+          margin-top: 12px;
+        }
+
+        .layout {
+          grid-template-columns: 1fr;
+          gap: 14px;
+        }
+
+        .booking {
+          padding: 18px 14px;
+        }
+
+        .upcoming {
+          padding: 18px;
+        }
+
+        .slots {
+          grid-template-columns: repeat(3, 1fr);
+        }
+
+        .panel {
+          border-radius: 19px;
+        }
+
+        .day {
+          flex-basis: 61px;
+        }
+
+        .tip {
+          padding: 17px;
+        }
+
+        .tip p {
+          max-width: 80%;
+        }
+      }
+
+      @media (min-width: 751px) {
+        .sidebar {
+          position: sticky;
+          top: 20px;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="app">
+      <header class="top">
+        <div class="brand">
+          <span class="logo">↗</span>
+          Rally
+          <span class="club-label">CLUB</span>
+        </div>
+
+        <div class="topright">
+          <button class="link" id="settings">⚙ API settings</button>
+
+          <div style="text-align: right">
+            <div id="memberName" style="font-weight: 750; font-size: 13px">
+              Alex Morgan
+            </div>
+            <div style="font-size: 11px; color: var(--muted)">Club member</div>
+          </div>
+
+          <button class="avatar" aria-label="Member profile">AM</button>
+        </div>
+      </header>
+
+      <section class="intro">
+        <div>
+          <h1>Find your court.</h1>
+          <p class="sub">Pick a time and get out there.</p>
+        </div>
+        <div class="badge">● &nbsp;Member booking</div>
+      </section>
+
+      <div class="layout">
+        <main class="panel booking">
+          <div class="panelhead">
+            <h2>Book a court</h2>
+            <span class="month" id="monthLabel"></span>
+          </div>
+
+          <div class="datebar" id="datebar"></div>
+
+          <div class="controls">
+            <h3>Available times</h3>
+            <select class="select" id="duration">
+              <option value="60">60 minutes</option>
+              <option value="90">90 minutes</option>
+              <option value="120">120 minutes</option>
+            </select>
+          </div>
+
+          <div id="courtList" class="courts"></div>
+
+          <div class="legend">
+            <span><i class="dot"></i>Available</span>
+            <span><i class="dot busydot"></i>Booked</span>
+            <span><i class="dot minedot"></i>Your booking</span>
+          </div>
+        </main>
+
+        <aside class="sidebar">
+          <section class="panel upcoming">
+            <h2>
+              Your upcoming games
+              <span
+                id="resCount"
+                style="font-size: 12px; color: var(--muted); font-weight: 600"
+              ></span>
+            </h2>
+            <div class="reslist" id="reservations"></div>
+          </section>
+
+          <section class="tip">
+            <div class="tiplabel">Club note</div>
+            <p>Good games start with a great partner. Bring one along.</p>
+          </section>
+        </aside>
+      </div>
+
+      <div class="footer">Rally Club · Make time to play</div>
+    </div>
+
+    <div class="notice" id="notice" role="status"></div>
+
+    <dialog id="settingsDialog">
+      <h2>Connect your API</h2>
+      <p>
+        Configure the REST API used to load courts and manage bookings.
+        Settings are saved in this browser.
+      </p>
+
+      <div class="field">
+        <label for="apiUrl">API base URL</label>
+        <input
+          id="apiUrl"
+          placeholder="https://club.example.com/api"
+          type="url"
+        >
+      </div>
+
+      <div class="field">
+        <label for="apiToken">Bearer token (optional)</label>
+        <input
+          id="apiToken"
+          placeholder="Member access token"
+          type="password"
+        >
+      </div>
+
+      <div class="field">
+        <label for="memberInput">Member name</label>
+        <input id="memberInput" placeholder="Alex Morgan">
+      </div>
+
+      <div class="actions">
+        <button class="btn secondary" id="closeSettings">Cancel</button>
+        <button class="btn primary" id="saveSettings">Save settings</button>
+      </div>
+    </dialog>
+
+    <script>
+      const $ = (selector) => document.querySelector(selector);
+      const storageKey = "rally-settings-v1";
+
+      const slots = [
+        "7:00 AM",
+        "8:00 AM",
+        "9:00 AM",
+        "10:00 AM",
+        "11:00 AM",
+        "12:00 PM",
+        "1:00 PM",
+        "2:00 PM",
+        "3:00 PM",
+        "4:00 PM",
+        "5:00 PM",
+        "6:00 PM",
+      ];
+
+      const sampleCourts = [
+        { id: "1", name: "Court 1", surface: "Outdoor · Blue" },
+        { id: "2", name: "Court 2", surface: "Outdoor · Green" },
+        { id: "3", name: "Court 3", surface: "Indoor · Cushioned" },
+      ];
+
+      let cfg = JSON.parse(localStorage.getItem(storageKey) || "{}");
+      let selectedDate = new Date();
+      let courts = sampleCourts;
+      let bookings = [];
+      let demo = true;
+
+      function dateKey(date) {
+        return [
+          date.getFullYear(),
+          String(date.getMonth() + 1).padStart(2, "0"),
+          String(date.getDate()).padStart(2, "0"),
+        ].join("-");
+      }
+
+      function escapeHtml(value) {
+        const replacements = {
+          "&": "&amp;",
+          "<": "&lt;",
+          ">": "&gt;",
+          '"': "&quot;",
+          "'": "&#39;",
+        };
+
+        return String(value ?? "").replace(/[&<>"']/g, (character) => {
+          return replacements[character];
+        });
+      }
+
+      function notify(message, isError = false) {
+        const notice = $("#notice");
+
+        notice.textContent = message;
+        notice.classList.toggle("error", isError);
+        notice.classList.add("show");
+
+        setTimeout(() => {
+          notice.classList.remove("show");
+        }, 2600);
+      }
+
+      function renderDays() {
+        const startDate = new Date();
+        startDate.setHours(0, 0, 0, 0);
+
+        $("#monthLabel").textContent = selectedDate.toLocaleDateString(
+          undefined,
+          { month: "long", year: "numeric" },
+        );
+
+        $("#datebar").innerHTML = "";
+
+        for (let offset = 0; offset < 10; offset += 1) {
+          const date = new Date(startDate);
+          date.setDate(startDate.getDate() + offset);
+
+          const button = document.createElement("button");
+          const isSelected = dateKey(date) === dateKey(selectedDate);
+          const isToday = offset === 0;
+
+          button.className =
+            "day" +
+            (isSelected ? " active" : "") +
+            (isToday ? " today" : "");
+
+          button.innerHTML =
+            "<small>" +
+            date.toLocaleDateString(undefined, { weekday: "short" }) +
+            "</small>" +
+            "<strong>" +
+            date.getDate() +
+            "</strong>" +
+            "<small>" +
+            date.toLocaleDateString(undefined, { month: "short" }) +
+            "</small>";
+
+          button.onclick = () => {
+            selectedDate = date;
+            renderDays();
+            refresh();
+          };
+
+          $("#datebar").append(button);
+        }
+      }
+
+      function loadDemoData() {
+        demo = true;
+        courts = sampleCourts;
+        bookings = JSON.parse(
+          localStorage.getItem("rally-demo-bookings") || "[]",
+        );
+        draw();
+      }
+
+      function draw() {
+        const date = dateKey(selectedDate);
+
+        $("#courtList").innerHTML =
+          courts
+            .map((court) => {
+              const occupied = bookings.filter((booking) => {
+                return (
+                  booking.date === date &&
+                  String(booking.courtId) === String(court.id)
+                );
+              });
+
+              const slotsMarkup = slots
+                .map((time) => {
+                  const existing = occupied.find((booking) => {
+                    return booking.time === time || booking.startTime === time;
+                  });
+
+                  const isMine =
+                    existing &&
+                    String(existing.memberId || "") ===
+                      String(cfg.memberId || "demo");
+
+                  const slotClass = existing
+                    ? isMine
+                      ? "mine"
+                      : "busy"
+                    : "";
+
+                  const disabled = existing ? "disabled" : "";
+                  const buttonLabel = existing
+                    ? isMine
+                      ? "Your game"
+                      : "Booked"
+                    : time;
+
+                  return (
+                    '<button class="slot ' +
+                    slotClass +
+                    '" ' +
+                    disabled +
+                    ' data-court="' +
+                    escapeHtml(court.id) +
+                    '" data-time="' +
+                    escapeHtml(time) +
+                    '">' +
+                    buttonLabel +
+                    "</button>"
+                  );
+                })
+                .join("");
+
+              return (
+                '<section class="court">' +
+                '<div class="courtrow">' +
+                '<div class="courtname">' +
+                '<span class="courtmark">▦</span>' +
+                escapeHtml(court.name) +
+                "</div>" +
+                '<span class="courtmeta">' +
+                escapeHtml(court.surface || "Court") +
+                "</span>" +
+                "</div>" +
+                '<div class="slots">' +
+                slotsMarkup +
+                "</div>" +
+                "</section>"
+              );
+            })
+            .join("") || '<div class="empty">No courts found for this club.</div>';
+
+        document.querySelectorAll(".slot:not(:disabled)").forEach((button) => {
+          button.onclick = () => {
+            reserve(button.dataset.court, button.dataset.time);
+          };
+        });
+
+        drawReservations();
+      }
+
+      function drawReservations() {
+        const mine = bookings
+          .filter((booking) => {
+            return (
+              booking.memberId === cfg.memberId ||
+              (!booking.memberId && demo)
+            );
+          })
+          .sort((first, second) => {
+            return (first.date + first.time).localeCompare(
+              second.date + second.time,
+            );
+          });
+
+        $("#resCount").textContent = mine.length ? "· " + mine.length : "";
+
+        $("#reservations").innerHTML = mine.length
+          ? mine
+              .map((booking) => {
+                const courtName =
+                  booking.courtName ||
+                  courts.find((court) => {
+                    return String(court.id) === String(booking.courtId);
+                  })?.name ||
+                  "Court";
+
+                const formattedDate = new Date(
+                  booking.date + "T12:00:00",
+                ).toLocaleDateString(undefined, {
+                  weekday: "short",
+                  month: "short",
+                  day: "numeric",
+                });
+
+                return (
+                  '<article class="res">' +
+                  '<div class="reshead">' +
+                  "<strong>" +
+                  escapeHtml(courtName) +
+                  "</strong>" +
+                  "<time>" +
+                  escapeHtml(booking.time) +
+                  "</time>" +
+                  "</div>" +
+                  '<div class="resfoot">' +
+                  '<span class="resdate">' +
+                  formattedDate +
+                  " · " +
+                  escapeHtml($("#duration").value) +
+                  " min</span>" +
+                  '<button class="cancel" data-id="' +
+                  escapeHtml(booking.id) +
+                  '">Cancel</button>' +
+                  "</div>" +
+                  "</article>"
+                );
+              })
+              .join("")
+          : '<div class="empty">No games booked yet. Pick a time to get started.</div>';
+
+        document.querySelectorAll(".cancel").forEach((button) => {
+          button.onclick = () => cancelBooking(button.dataset.id);
+        });
+      }
+
+      async function api(path, options = {}) {
+        const headers = {
+          "Content-Type": "application/json",
+          ...(cfg.token ? { Authorization: "Bearer " + cfg.token } : {}),
+          ...(options.headers || {}),
+        };
+
+        const response = await fetch(
+          cfg.baseUrl.replace(/\/$/, "") + path,
+          { ...options, headers },
+        );
+
+        if (!response.ok) {
+          const errorText = (await response.text()).slice(0, 180);
+          throw new Error(
+            errorText || "Request failed (" + response.status + ")",
+          );
+        }
+
+        if (response.status === 204) {
+          return null;
+        }
+
+        return response.json();
+      }
+
+      async function refresh() {
+        if (!cfg.baseUrl) {
+          loadDemoData();
+          return;
+        }
+
+        try {
+          demo = false;
+
+          const [courtsResponse, bookingsResponse] = await Promise.all([
+            api("/courts"),
+            api("/reservations?date=" + dateKey(selectedDate)),
+          ]);
+
+          courts = Array.isArray(courtsResponse)
+            ? courtsResponse
+            : courtsResponse.courts || [];
+
+          bookings = Array.isArray(bookingsResponse)
+            ? bookingsResponse
+            : bookingsResponse.reservations || [];
+
+          draw();
+        } catch (error) {
+          notify("API error: " + error.message, true);
+          loadDemoData();
+        }
+      }
+
+      async function reserve(courtId, time) {
+        const court = courts.find((item) => {
+          return String(item.id) === String(courtId);
+        });
+
+        const body = {
+          courtId,
+          date: dateKey(selectedDate),
+          startTime: time,
+          durationMinutes: Number($("#duration").value),
+          memberId: cfg.memberId || "demo",
+        };
+
+        try {
+          if (demo) {
+            const overlaps = bookings.some((booking) => {
+              return (
+                booking.date === body.date &&
+                String(booking.courtId) === String(courtId) &&
+                booking.time === time
+              );
+            });
+
+            if (overlaps) {
+              throw new Error("That time was just booked.");
+            }
+
+            bookings.push({
+              id: Date.now().toString(),
+              ...body,
+              time,
+              courtName: court?.name,
+              memberId: cfg.memberId || "demo",
+            });
+
+            localStorage.setItem(
+              "rally-demo-bookings",
+              JSON.stringify(bookings),
+            );
+          } else {
+            const created = await api("/reservations", {
+              method: "POST",
+              body: JSON.stringify(body),
+            });
+
+            bookings.push({
+              ...body,
+              ...created,
+              id: created?.id || Date.now().toString(),
+              time,
+              courtName: court?.name,
+            });
+          }
+
+          draw();
+          notify("You’re booked! See you on court.");
+        } catch (error) {
+          notify(error.message, true);
+        }
+      }
+
+      async function cancelBooking(id) {
+        try {
+          if (demo) {
+            bookings = bookings.filter((booking) => {
+              return String(booking.id) !== String(id);
+            });
+
+            localStorage.setItem(
+              "rally-demo-bookings",
+              JSON.stringify(bookings),
+            );
+          } else {
+            await api("/reservations/" + encodeURIComponent(id), {
+              method: "DELETE",
+            });
+
+            bookings = bookings.filter((booking) => {
+              return String(booking.id) !== String(id);
+            });
+          }
+
+          draw();
+          notify("Booking cancelled.");
+        } catch (error) {
+          notify("Could not cancel: " + error.message, true);
+        }
+      }
+
+      $("#settings").onclick = () => {
+        $("#apiUrl").value = cfg.baseUrl || "";
+        $("#apiToken").value = cfg.token || "";
+        $("#memberInput").value = cfg.name || "Alex Morgan";
+        $("#settingsDialog").showModal();
+      };
+
+      $("#closeSettings").onclick = () => {
+        $("#settingsDialog").close();
+      };
+
+      $("#saveSettings").onclick = () => {
+        cfg = {
+          baseUrl: $("#apiUrl").value.trim().replace(/\/$/, ""),
+          token: $("#apiToken").value.trim(),
+          name: $("#memberInput").value.trim() || "Member",
+          memberId: cfg.memberId || "demo",
+        };
+
+        localStorage.setItem(storageKey, JSON.stringify(cfg));
+        $("#memberName").textContent = cfg.name;
+        $("#settingsDialog").close();
+        refresh();
+      };
+
+      $("#duration").onchange = draw;
+
+      $("#memberName").textContent = cfg.name || "Alex Morgan";
+      renderDays();
+      refresh();
+    </script>
+  </body>
+</html>
