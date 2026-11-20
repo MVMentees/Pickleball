@@ -1,0 +1,453 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="theme-color" content="#f4f6f2">
+    <title>Rally Club — Sign in</title>
+
+    <style>
+      :root {
+        --ink: #17251e;
+        --muted: #6b786f;
+        --green: #155e43;
+        --mint: #e1f1e7;
+        --lime: #d4f16a;
+        --paper: #f4f6f2;
+        --white: #fff;
+        --line: #e4e9e3;
+        --shadow: 0 18px 60px #183d2814;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+        margin: 0;
+        background: var(--paper);
+        color: var(--ink);
+        font: 15px/1.45 Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+      }
+
+      .top {
+        width: min(1120px, 100%);
+        margin: 0 auto;
+        padding: 22px 30px;
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 11px;
+        font-size: 20px;
+        font-weight: 800;
+        letter-spacing: -0.6px;
+      }
+
+      .logo {
+        display: grid;
+        width: 38px;
+        height: 38px;
+        place-items: center;
+        border-radius: 13px;
+        background: var(--green);
+        color: var(--lime);
+        font-size: 18px;
+      }
+
+      .club-label {
+        color: #78847b;
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: 0;
+      }
+
+      .main {
+        display: grid;
+        flex: 1;
+        place-items: center;
+        padding: 20px 18px 48px;
+      }
+
+      .wrap {
+        display: grid;
+        width: min(940px, 100%);
+        min-height: 510px;
+        grid-template-columns: 1fr 1fr;
+        overflow: hidden;
+        border: 1px solid #e8ece7;
+        border-radius: 26px;
+        background: var(--white);
+        box-shadow: var(--shadow);
+      }
+
+      .story {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        overflow: hidden;
+        padding: 52px 42px;
+        background: var(--green);
+        color: var(--white);
+      }
+
+      .story::after {
+        position: absolute;
+        right: -120px;
+        bottom: -120px;
+        width: 300px;
+        height: 300px;
+        border: 1px solid #ffffff22;
+        border-radius: 50%;
+        box-shadow: 0 0 0 22px #ffffff0d, 0 0 0 46px #ffffff08;
+        content: "";
+      }
+
+      .eyebrow {
+        color: #c7e2cf;
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 1.4px;
+        text-transform: uppercase;
+      }
+
+      .story h1 {
+        margin: 15px 0;
+        font-size: 42px;
+        letter-spacing: -1.7px;
+        line-height: 1.04;
+      }
+
+      .story p {
+        max-width: 300px;
+        color: #d3e3d7;
+        font-size: 15px;
+      }
+
+      .paddle {
+        font-size: 86px;
+        line-height: 1;
+        color: var(--lime);
+        opacity: 0.92;
+      }
+
+      .storyfoot {
+        color: #c7e2cf;
+        font-size: 12px;
+      }
+
+      .formside {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding: 49px 46px;
+      }
+
+      .formside h2 {
+        margin: 0 0 5px;
+        font-size: 27px;
+        letter-spacing: -0.8px;
+      }
+
+      .sub {
+        margin: 0 0 27px;
+        color: var(--muted);
+        font-size: 13px;
+      }
+
+      .field {
+        display: flex;
+        flex-direction: column;
+        gap: 7px;
+        margin: 14px 0;
+      }
+
+      .field label {
+        font-size: 12px;
+        font-weight: 750;
+      }
+
+      .field input {
+        width: 100%;
+        border: 1px solid #dfe6df;
+        border-radius: 11px;
+        padding: 13px 12px;
+        outline: 0;
+        color: var(--ink);
+        font: inherit;
+      }
+
+      .field input:focus {
+        border-color: #77a98a;
+        box-shadow: 0 0 0 3px #dff0e4;
+      }
+
+      .btn {
+        width: 100%;
+        margin-top: 10px;
+        border: 0;
+        border-radius: 11px;
+        padding: 13px;
+        background: var(--green);
+        color: var(--white);
+        font: inherit;
+        font-weight: 750;
+        cursor: pointer;
+      }
+
+      .btn:disabled {
+        cursor: wait;
+        opacity: 0.65;
+      }
+
+      .switch {
+        margin: 20px 0 0;
+        color: var(--muted);
+        font-size: 13px;
+        text-align: center;
+      }
+
+      .switch a {
+        color: var(--green);
+        font-weight: 750;
+        text-decoration: none;
+      }
+
+      .switch a:hover {
+        text-decoration: underline;
+      }
+
+      .msg {
+        margin: 0 0 12px;
+        border-radius: 10px;
+        padding: 11px 12px;
+        background: #fff1eb;
+        color: #994b31;
+        font-size: 13px;
+      }
+
+      .msg.ok {
+        background: #e7f4e9;
+        color: #276446;
+      }
+
+      .hidden {
+        display: none !important;
+      }
+
+      .footer {
+        padding: 0 15px 19px;
+        color: #89948c;
+        font-size: 11px;
+        text-align: center;
+      }
+
+      @media (max-width: 700px) {
+        .top {
+          padding: 15px 17px;
+        }
+
+        .main {
+          align-items: start;
+          padding: 10px 14px 30px;
+        }
+
+        .wrap {
+          min-height: 0;
+          grid-template-columns: 1fr;
+          border-radius: 22px;
+        }
+
+        .story {
+          min-height: 180px;
+          padding: 24px 23px 20px;
+        }
+
+        .story h1 {
+          margin: 9px 0;
+          font-size: 31px;
+        }
+
+        .story p {
+          max-width: 270px;
+          margin: 0;
+          font-size: 13px;
+        }
+
+        .paddle {
+          position: absolute;
+          right: 25px;
+          bottom: 15px;
+          font-size: 64px;
+        }
+
+        .storyfoot {
+          display: none;
+        }
+
+        .formside {
+          padding: 29px 23px 31px;
+        }
+
+        .formside h2 {
+          font-size: 24px;
+        }
+
+        .sub {
+          margin-bottom: 20px;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <header class="top">
+      <div class="brand">
+        <span class="logo">↗</span>
+        Rally
+        <span class="club-label">CLUB</span>
+      </div>
+    </header>
+
+    <main class="main">
+      <div class="wrap">
+        <section class="story">
+          <div>
+            <div class="eyebrow">Your club. Your court.</div>
+            <h1>Good to see<br>you again.</h1>
+            <p>
+              Sign in to find a court, book a game, and catch up with your
+              pickleball crew.
+            </p>
+          </div>
+
+          <div class="paddle">◉</div>
+          <div class="storyfoot">Rally Club · Make time to play</div>
+        </section>
+
+        <section class="formside">
+          <h2>Welcome back</h2>
+          <p class="sub">Sign in with your member ID and password.</p>
+
+          <div id="message" class="msg hidden" role="alert"></div>
+
+          <form id="loginForm">
+            <div class="field">
+              <label for="memberId">Member ID</label>
+              <input
+                id="memberId"
+                name="member_id"
+                autocomplete="username"
+                required
+                placeholder="Your member ID"
+              >
+            </div>
+
+            <div class="field">
+              <label for="password">Password</label>
+              <input
+                id="password"
+                name="password"
+                type="password"
+                autocomplete="current-password"
+                required
+                placeholder="Your password"
+              >
+            </div>
+
+            <button class="btn" id="submit" type="submit">Sign in</button>
+          </form>
+
+          <p class="switch">
+            New to the club?
+            <a href="register.html">Create an account</a>
+          </p>
+        </section>
+      </div>
+    </main>
+
+    <footer class="footer">Rally Club · Make time to play</footer>
+
+    <script>
+      const loginUrl =
+        "http://192.168.56.20/Pickleball/subroutine/MEMBER_LOGIN";
+
+      function showMessage(text, isSuccess = false) {
+        const message = document.querySelector("#message");
+        message.textContent = text;
+        message.className = text ? (isSuccess ? "msg ok" : "msg") : "msg hidden";
+      }
+
+      document
+        .querySelector("#loginForm")
+        .addEventListener("submit", async (event) => {
+          event.preventDefault();
+
+          const memberId = document.querySelector("#memberId").value.trim();
+          const password = document.querySelector("#password").value;
+          const button = document.querySelector("#submit");
+
+          button.disabled = true;
+          button.textContent = "Signing in…";
+          showMessage("");
+
+          try {
+            const response = await fetch(loginUrl, {
+              method: "POST",
+              headers: {
+                accept: "application/json",
+                "Content-Type": "application/json",
+                "If-Modified-Since": "Mon, 26 Jul 1997 05:00:00 GMT",
+                "Cache-Control": "no-cache",
+                Pragma: "no-cache",
+              },
+              body: JSON.stringify({
+                member_id: memberId,
+                entered_password: password,
+              }),
+            });
+
+            let data;
+            try {
+              data = await response.json();
+              console.log("Login response:", data);
+            } catch {
+              throw new Error("The login service did not return valid JSON.");
+            }
+
+            if (String(data?.yes_no || "").toLowerCase() === "yes") {
+              sessionStorage.setItem("rally-authenticated-member-id", memberId);
+
+              if (data.member) {
+                sessionStorage.setItem("rally-member", JSON.stringify(data.member));
+              }
+
+              showMessage("Signed in successfully.", true);
+              setTimeout(() => {
+                location.href = "pickleball-booking.html";
+              }, 650);
+              return;
+            }
+
+            const errorMessage =
+              data?.error_message ||
+              `Sign-in failed (${response.status}). Check your member ID and password.`;
+
+            showMessage(errorMessage);
+          } catch (error) {
+            showMessage(`Could not reach the login service: ${error.message}`);
+          } finally {
+            button.disabled = false;
+            button.textContent = "Sign in";
+          }
+        });
+    </script>
+  </body>
+</html>
+
+
