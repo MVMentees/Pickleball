@@ -20,7 +20,7 @@ sudo ./mvis_install.sh install
 * Do you agree with these statements (y/N)?  **Y**
 * Enter the MultiValue Integration Server installation path or press [Enter] for /opt/cm: **Enter**
 * If you want to use cloud services please enter 'AZURE', 'AWS' or press [Enter] for non-cloud mode: **Enter**
-* Type in the correct option to proceed [local or MVServer]:  **MVServer**
+* Type in the correct option to proceed [local or MVServer]:  **local**
 * Would you like to start MultiValue Integration Server Admin? (Y/n) **Y**
 * Press any key... **Enter**
 
